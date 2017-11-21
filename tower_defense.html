@@ -1,0 +1,144 @@
+<!-- TOWER DEFENSE - Camille GOBERT, Arnault PASCUAL - 2015 -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Tower Defense JS</title>
+
+		<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+		<!--<script src="jquery.min.js" type="text/javascript"></script>-->
+		<script src="cell.js" type="text/javascript"></script>
+		<script src="enemy.js" type="text/javascript"></script>
+		<script src="tower.js" type="text/javascript"></script>
+		<script src="grid.js" type="text/javascript"></script>
+		<script src="current_game.js" type="text/javascript"></script>
+		<script src="graphics.js" type="text/javascript"></script>
+		<script src="tower_defense.js" type="text/javascript"></script>
+
+		<link rel="stylesheet" href="tower_defense.css"/>
+	</head>
+	<body>
+		<canvas id="game_canvas" width="1200" height="600">
+			Le canvas n'est pas supporté sur ce navigateur.
+		</canvas>
+
+		<audio src="http://soundimage.org/wp-content/uploads/2015/03/Castle-of-Despair.mp3" volume="0.3" autoplay loop style="position: absolute; right: 10; top: 10;">La balise audio n'est pas supportée sur ce navigateur</audio>
+
+<!--
+		<button style="position: absolute; top: 20px; left: 20px; z-index: 100;" onclick="$('.game_popup').toggle();" type="button">Afficher/cacher les popups</button>
+
+		<button style="position: absolute; top: 20px; left: 220px; z-index: 100;" onclick="localStorage.removeItem('best_players');" type="button">Vider localStorage</button>
+-->
+
+		<!-- POPUP : ACHAT DE TOUR -->
+		<div class="game_popup" id="add_tower_popup">
+			<h2>Achat d'une nouvelle tour</h2>
+
+			<!-- Liste des tours disponibles a l'achat -->
+			<div id="towers_list">
+				<h3>Tours disponibles</h3>
+				<ul>
+					<li>
+						<img src="graphics/block.gif" alt="Image de la tour n°1">
+						<ul>
+							<li class="tower_name">Tour n°1</li>
+							<li class="tower_price"><strong>Coût :</strong> $xxx</li>
+						</ul>
+					</li>
+					<li>
+						<img src="graphics/block.gif" alt="Image de la tour n°2">
+						<ul>
+							<li class="tower_name">Tour n°2</li>
+							<li class="tower_price"><strong>Coût :</strong> $yyy</li>
+						</ul>
+					</li>
+					<li>
+						<img src="graphics/block.gif" alt="Image de la tour n°3">
+						<ul>
+							<li class="tower_name">Tour n°3</li>
+							<li class="tower_price"><strong>Coût :</strong> $zzz</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Details sur la tour selectionnee -->
+			<div id="selected_tower_details">
+				<!--<img src="graphics/block.gif" alt="Image de la tour selectionnée">-->
+				<h3 class="tower_name">Nom de la tour sélectionnée</h3>
+				<ul>
+					<li class="tower_effect"><strong>Type d'attaque :</strong> Type d'attaque de la tour sélectionnée</li>
+					<li class="tower_strength"><strong>Puissance :</strong> Dégâts/puissance de la tour sélectionnée</li>
+					<li class="tower_speed"><strong>Vitesse :</strong> Vitesse de la tour sélectionnée</li>
+					<li class="tower_range"><strong>Portée :</strong> Portée de la tour sélectionnée</li>
+					<li class="tower_price"><strong>Coût :</strong> $xxx</li>
+				</ul>
+			</div>
+
+			<!-- Boutons d'action (Acheter/Annuler) -->
+			<div id="add_tower_buttons">
+				<button id="add_tower_buy_button" class="button_error" type="button">Choissisez une tour à acheter</button>
+				<button id="add_tower_cancel_button" type="button">Annuler</button>
+			</div>
+		</div>
+
+		<!-- POPUP : AMELIORATION/VENTE DE TOUR -->
+		<div class="game_popup" id="upgrade_tower_popup">
+			<h2>Amélioration/vente d'une tour</h2>
+
+			<!-- Details sur la tour selectionnée -->
+			<div id="selected_tower_to_upgrade_details">
+				<h3 class="tower_name">Nom de la tour sélectionnée</h3>
+				<h3 class="upgraded_tower_name"></h3>
+				<img src="graphics/block.gif" alt="Image de la tour sélectionnée">
+				<ul>
+					<li class="tower_effect"><strong>Type d'attaque :</strong> Type d'attaque de la tour sélectionnée <span class="tower_upgrade_info">(+ XXX)</span></li>
+					<li class="tower_strength"><strong>Puissance :</strong> Dégâts/puissance de la tour sélectionnée<span class="tower_upgrade_info">(+ XXX)</span></li>
+					<li class="tower_speed"><strong>Vitesse :</strong> Vitesse de la tour sélectionnée<span class="tower_upgrade_info">(+ XXX)</span></li>
+					<li class="tower_range"><strong>Portée :</strong> Portée de la tour sélectionnée<span class="tower_upgrade_info">(+ XXX)</span></li>
+					<li class="upgrade_price"><strong>Coût de l'amélioration :</strong> $xxx</li>
+				</ul>
+			</div>
+
+			<!-- Boutons d'action (Améliorer/Vendre/Annuler) -->
+			<div id="upgrade_tower_buttons">
+				<button id="upgrade_tower_upgrade_button" class="button_error" type="button">Améliorer</button>
+				<button id="upgrade_tower_sell_button" type="button">Vendre</button>
+				<button id="upgrade_tower_cancel_button" type="button">Annuler</button>
+			</div>
+		</div>
+
+		<!-- POPUP : FIN DE PARTIE (Game Over / Victoire) -->
+		<div class="game_popup" id="ended_game_popup">
+			<h2>Fin de la partie !</h2>
+
+			<p id="ended_game_details">
+				Texte de victoire ou de défaite.
+			</p>
+
+			<!-- Pas d'ajout d'un meilleur score -->
+			<p id="insufficient_score">
+				Votre score ne vous permet pas d'être admis parmi les 10 meilleurs joueurs... Dommage !
+			</p>
+
+			<!-- Ajout d'un meilleur score -->
+			<div id="sufficient_score">
+				<p>
+					<br/>
+					Votre score est suffisant pour vous classer parmi les 10 meilleurs joueurs, bravo !<br/>
+				</p>
+				<form onsubmit="return false;">
+					<label for="player_name_input">Veuillez entrer votre pseudo :</label><br/>
+					<input type="text" id="player_name_input" placeholder="Votre pseudo" required />
+					<button type="button" id="add_best_player_button">Valider</button>
+				</form>
+			</div>
+
+			<!-- Tableau des meilleurs scores -->
+			<div id="best_players_table"></div>
+
+			<!-- Bouton pour recommencer le jeu -->
+			<button id="restart_game_button" type="button">Recommencer la partie</button>
+		</div>
+	</body>
+</html>

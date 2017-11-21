@@ -61,7 +61,7 @@ button {
 
 @font-face {
 	font-family: "Free Pixel";
-	src: url("FreePixel.ttf");
+	src: url("graphics/fonts/FreePixel.ttf");
 }
 
 #game_canvas {

@@ -379,11 +379,11 @@ button {
 	position: absolute;
 	width: 480px;
 	height: 80px;
-	background-image: url("graphics/ui/attack_button.png");
+	background-image: url("../graphics/ui/attack_button.png");
 	background-repeat: no-repeat;
 	z-index: 60;
 }
 
 #start_attack:hover {
-	background-image: url("graphics/ui/attack_button_hover.png");
+	background-image: url("../graphics/ui/attack_button_hover.png");
 }

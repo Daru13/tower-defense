@@ -4,7 +4,7 @@
 // CLASSE : PARTIE COURANTE
 // --------------------------------------------------------------------------------------
 // Cette classe représente une partie de Tower Defense.
-// 
+//
 // Elle permet une gestion complète du jeu en cours, indépendemment de l'affichage graphique.
 // Elle permet de manipuler l'état du jeu, les ennemis et les tours.
 // --------------------------------------------------------------------------------------
@@ -38,8 +38,8 @@ function CurrentGame (grid, world)
 	this.last_level						 = undefined;
 
 	// Argent du joueur
-	this.player_money = 1000;
-	
+	this.player_money = 100;
+
 	// Divers compteurs relatifs aux ennemis
 	this.current_level_nb_enemies 		 = 0;
 	this.current_level_nb_passed_enemies = 0;
@@ -129,7 +129,7 @@ function CurrentGame (grid, world)
 	// --------------------------------------------------------------------------------------
 	// LANCEMENT ET RELANCEMENT D'UNE PARTIE
 	// --------------------------------------------------------------------------------------
-	
+
 	this.startGame = function (levels_characteristics)
 	{
 		console.log("--- LANCEMENT DU JEU ---");
@@ -147,10 +147,10 @@ function CurrentGame (grid, world)
 
 		// On supprime toutes les tours en remplacant leurs cellulles par des cellulles vides
 		for (var index = 0 ; index < this.towers.length; index++ ){
-			var tower  = this.towers[index]; 
+			var tower  = this.towers[index];
 			this.grid.cells[tower.row][tower.col] = new Cell(tower.row, tower.col, CELL_EMPTY);
 		}
-			
+
 		// on vide le tableau des tours
 		this.towers  = [];
 		// idem pour les enemies
@@ -209,7 +209,7 @@ function CurrentGame (grid, world)
 
 		this.current_level_nb_enemies = level_nb_enemies;
 	};
-	
+
 	this.addEnemy = function (enemy_type, enemies_characteristics)
 	{
 		var new_enemy = new Enemy(this.grid.entrance.row, this.grid.entrance.col, enemy_type, enemies_characteristics);
@@ -240,7 +240,7 @@ function CurrentGame (grid, world)
 
 		// On crée une nouvelle tour
 		var new_tower = new Tower(row, col, tower_type, towers_characteristics);
-		
+
 		// On ajoute cette tour à la grille, ainsi qu'à la liste des tours
 		this.grid.cells[row][col] = new_tower;
 		this.towers.push(new_tower);
